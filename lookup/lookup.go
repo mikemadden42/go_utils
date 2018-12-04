@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"sync"
@@ -26,7 +27,7 @@ func main() {
 
 	file, err := os.Open(*filePtr)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		os.Exit(1)
 	}
 
@@ -43,13 +44,20 @@ func main() {
 }
 
 func resolve(host string) {
-	addrs, err := net.LookupHost(host)
+	ips, err := net.LookupHost(host)
 	if err != nil {
-		fmt.Println(host, err.Error())
-	} else {
-		fmt.Println(host)
-		for _, s := range addrs {
-			fmt.Println(s)
+		log.Println(err)
+	}
+
+	for _, ip := range ips {
+		fmt.Println("OK", host, ip)
+		hosts, err := net.LookupAddr(ip)
+		if err != nil {
+			log.Println(err)
+		}
+
+		for _, host := range hosts {
+			fmt.Println("OK", ip, host)
 		}
 	}
 
