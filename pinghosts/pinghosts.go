@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/tatsushid/go-fastping"
+	fastping "github.com/tatsushid/go-fastping"
 )
 
 func init() {
