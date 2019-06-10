@@ -33,7 +33,9 @@ func main() {
 	}
 
 	var jsontype jsonObject
-	json.Unmarshal(file, &jsontype)
+	err := json.Unmarshal(file, &jsontype)
+	checkErr(err)
+
 	host := jsontype.Dial.Server
 	protocol := "tcp"
 
@@ -44,5 +46,11 @@ func main() {
 		} else {
 			fmt.Printf("%4s%30s%6d%5s\n", "OK", host, port, protocol)
 		}
+	}
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
 	}
 }

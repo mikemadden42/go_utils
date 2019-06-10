@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 // function to return the disk usage information
@@ -17,7 +18,7 @@ func diskUsage(currentPath string, info os.FileInfo) int64 {
 		return size
 	}
 
-	dir, err := os.Open(currentPath)
+	dir, err := os.Open(filepath.Clean(currentPath))
 
 	if err != nil {
 		fmt.Println(err)

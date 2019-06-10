@@ -24,10 +24,17 @@ func main() {
 	defer r.Body.Close()
 
 	dec := json.NewDecoder(r.Body)
-	dec.Decode(&data)
+	err := dec.Decode(&data)
+	checkErr(err)
 
 	for _, item := range data.Items {
 		fmt.Printf("%s = %d\n", item.Name, item.Count)
 	}
 
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

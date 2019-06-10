@@ -53,7 +53,8 @@ func get(src string) {
 	segments := strings.Split(path, "/")
 
 	downloadDir := "data"
-	os.Mkdir(downloadDir, 0700)
+	err = os.Mkdir(downloadDir, 0700)
+	checkErr(err)
 	fileName := downloadDir + string(os.PathSeparator) + segments[len(segments)-1]
 
 	file, err := os.Create(fileName)
@@ -91,4 +92,10 @@ func get(src string) {
 
 	fmt.Printf("%s,%s,%v", resp.Status, rawURL, size)
 	fmt.Println()
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
