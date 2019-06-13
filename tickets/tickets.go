@@ -26,8 +26,7 @@ func main() {
 		return
 	}
 
-	var tickets map[string]string
-	tickets = make(map[string]string)
+	var tickets map[string]string = make(map[string]string)
 
 	for _, ticket := range rawCSVdata {
 		assignee := ticket[49]
