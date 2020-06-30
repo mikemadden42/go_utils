@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	start := time.Date(2019, 4, 8, 14, 0, 0, 0, time.UTC)
+	start := time.Date(2020, 7, 6, 14, 0, 0, 0, time.UTC)
 	end := time.Now().UTC()
 	fmt.Println("diff:", DiffDays(start, end), "days")
 }
