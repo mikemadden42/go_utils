@@ -20,11 +20,12 @@ func main() {
 		}
 	}
 
-	r, _ := http.Get("https://api.stackexchange.com/2.2/tags?page=1&pagesize=100&order=desc&sort=popular&site=stackoverflow")
+	r, err := http.Get("https://api.stackexchange.com/2.2/tags?page=1&pagesize=100&order=desc&sort=popular&site=stackoverflow")
+	checkErr(err)
 	defer r.Body.Close()
 
 	dec := json.NewDecoder(r.Body)
-	err := dec.Decode(&data)
+	err = dec.Decode(&data)
 	checkErr(err)
 
 	for _, item := range data.Items {
