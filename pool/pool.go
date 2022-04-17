@@ -29,7 +29,7 @@ func main() {
 		squareGroup.Add(1)
 		go func() {
 			for number := range numbers {
-				squares <- (number * number)
+				squares <- number * number
 			}
 			squareGroup.Done()
 		}()

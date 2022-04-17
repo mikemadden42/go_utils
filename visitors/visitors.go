@@ -45,9 +45,9 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	const sep string = "^"
 	hits := 0
-	var ips map[string]int = make(map[string]int)
-	var urls map[string]int = make(map[string]int)
-	var agents map[string]int = make(map[string]int)
+	ips := make(map[string]int)
+	urls := make(map[string]int)
+	agents := make(map[string]int)
 
 	for scanner.Scan() {
 		entry := strings.Split(scanner.Text(), sep)
