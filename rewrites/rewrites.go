@@ -16,20 +16,25 @@ import (
 
 func main() {
 
-	csvfile, err := os.Open("rws.csv")
+	csvFile, err := os.Open("rws.csv")
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	defer csvfile.Close()
+	defer func(csvFile *os.File) {
+		err := csvFile.Close()
+		if err != nil {
+			fmt.Println("Unable to close file...")
+		}
+	}(csvFile)
 
-	reader := csv.NewReader(csvfile)
+	reader := csv.NewReader(csvFile)
 
 	reader.FieldsPerRecord = -1
 
-	rawCSVdata, err := reader.ReadAll()
+	rawCSVData, err := reader.ReadAll()
 
 	if err != nil {
 		fmt.Println(err)
@@ -37,7 +42,7 @@ func main() {
 	}
 
 	// sanity check, display to standard output
-	for _, each := range rawCSVdata {
+	for _, each := range rawCSVData {
 		code := each[0]
 		src := each[1]
 		dst := each[2]

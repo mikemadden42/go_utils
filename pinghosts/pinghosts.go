@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	fastping "github.com/tatsushid/go-fastping"
+	"github.com/tatsushid/go-fastping"
 )
 
 func init() {
@@ -24,7 +24,12 @@ func main() {
 		log.Fatal("Error opening input file:", err)
 	}
 
-	defer inputFile.Close()
+	defer func(inputFile *os.File) {
+		err := inputFile.Close()
+		if err != nil {
+			fmt.Println("Unable to close file...")
+		}
+	}(inputFile)
 
 	scanner := bufio.NewScanner(inputFile)
 

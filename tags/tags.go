@@ -6,6 +6,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -22,7 +23,12 @@ func main() {
 
 	r, err := http.Get("https://api.stackexchange.com/2.2/tags?page=1&pagesize=100&order=desc&sort=popular&site=stackoverflow")
 	checkErr(err)
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Unable to close body...")
+		}
+	}(r.Body)
 
 	dec := json.NewDecoder(r.Body)
 	err = dec.Decode(&data)

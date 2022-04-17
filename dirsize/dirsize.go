@@ -24,7 +24,12 @@ func diskUsage(currentPath string, info os.FileInfo) int64 {
 		fmt.Println(err)
 		return size
 	}
-	defer dir.Close()
+	defer func(dir *os.File) {
+		err := dir.Close()
+		if err != nil {
+			fmt.Println("Unable to close directory...")
+		}
+	}(dir)
 
 	files, err := dir.Readdir(-1)
 

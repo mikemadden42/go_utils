@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-func scan(path string, f os.FileInfo, err error) error {
+func scan(path string, f os.FileInfo, _ error) error {
 	if f.Name() != "." || f.Name() != ".." {
 		// Greater than 100 MB
 		if f.Size() > 104857600 {

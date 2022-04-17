@@ -15,11 +15,13 @@ func main() {
 		return
 	}
 
-	defer csvFile.Close()
+	defer func(csvFile *os.File) {
+		_ = csvFile.Close()
+	}(csvFile)
 
 	reader := csv.NewReader(csvFile)
 	reader.FieldsPerRecord = -1
-	rawCSVdata, err := reader.ReadAll()
+	rawCSVData, err := reader.ReadAll()
 
 	if err != nil {
 		fmt.Println(err)
@@ -28,7 +30,7 @@ func main() {
 
 	tickets := make(map[string]string)
 
-	for _, ticket := range rawCSVdata {
+	for _, ticket := range rawCSVData {
 		assignee := ticket[49]
 		date := ticket[19]
 		order := ticket[50]

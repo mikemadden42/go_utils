@@ -3,7 +3,7 @@
 // https://www.socketloop.com/tutorials/how-to-create-directory-in-go
 // https://www.socketloop.com/tutorials/golang-check-if-a-directory-exist-in-go
 
-// Golang, TLS & Comodo
+// Golang, TLS
 // http://bridge.grumpy-troll.org/2014/05/golang-tls-comodo/
 
 package main
@@ -29,7 +29,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("Unable to close file...")
+		}
+	}(file)
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -63,7 +68,12 @@ func get(src string) {
 		fmt.Println(err)
 		panic(err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("Unable to close file...")
+		}
+	}(file)
 
 	//fmt.Printf("Downloading file %s...", fileName)
 	//fmt.Println()
@@ -81,8 +91,12 @@ func get(src string) {
 		fmt.Println(err)
 		panic(err)
 	}
-	defer resp.Body.Close()
-	//fmt.Println(resp.Status)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Println("Unable to close file...")
+		}
+	}(resp.Body)
 
 	size, err := io.Copy(file, resp.Body)
 
