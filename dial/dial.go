@@ -10,7 +10,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"strconv"
@@ -26,7 +25,7 @@ type dialType struct {
 }
 
 func main() {
-	file, e := ioutil.ReadFile("./dial.json")
+	file, e := os.ReadFile("./dial.json")
 	if e != nil {
 		fmt.Printf("File error: %v\n", e)
 		os.Exit(1)
