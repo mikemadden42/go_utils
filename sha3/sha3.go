@@ -35,7 +35,7 @@ func Sha3File(filePath string) (hash string, err error) {
 	if err != nil {
 		return "", fmt.Errorf("error opening file for SHA-3 computation: %v (%s)", err, filePath)
 	}
-	
+
 	// Defer a function closure to check the error from f.Close()
 	defer func() {
 		if closeErr := f.Close(); closeErr != nil {
