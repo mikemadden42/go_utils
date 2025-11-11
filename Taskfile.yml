@@ -1,0 +1,32 @@
+version: "3"
+
+tasks:
+  check:
+    desc: "Run all formatters, linters, and security checks."
+    cmds:
+      - echo "--- Running Formatter (goimports) ---"
+      - |
+        # We must escape the Go template syntax {{.Dir}} so that Task does not
+        # interpret it as *its* template. We do this by writing {{ "{{" }} and {{ "}}" }}.
+        if [ -n "$(goimports -d $(go list -f '{{ "{{" }}.Dir{{ "}}" }}' ./...))" ]; then
+          echo "FAIL: goimports found files to format. Run 'task fmt' to fix:"
+          goimports -d $(go list -f '{{ "{{" }}.Dir{{ "}}" }}' ./...)
+          exit 1
+        fi
+
+      - echo "\n--- Running Linters (golangci-lint) ---"
+      - golangci-lint run
+
+      - echo "\n--- Running Security Scanner (gosec) ---"
+      # './...' works correctly for gosec and golangci-lint
+      - gosec ./...
+
+      - echo "\nAll checks passed."
+
+  fmt:
+    desc: "Automatically formats all Go code with goimports."
+    cmds:
+      - echo "Running goimports to format code..."
+      # Escape {{.Dir}} as {{ "{{" }}.Dir{{ "}}" }}
+      - goimports -w $(go list -f '{{ "{{" }}.Dir{{ "}}" }}' ./...)
+      - echo "Formatting complete."
