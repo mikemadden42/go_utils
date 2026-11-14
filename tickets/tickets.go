@@ -30,7 +30,16 @@ func main() {
 
 	tickets := make(map[string]string)
 
-	for _, ticket := range rawCSVData {
+	// Skip the header row; the export has at least 51 columns.
+	for i, ticket := range rawCSVData {
+		if i == 0 {
+			continue
+		}
+		if len(ticket) < 51 {
+			fmt.Fprintf(os.Stderr, "line %d: expected 51 fields, got %d\n", i+1, len(ticket))
+			continue
+		}
+
 		assignee := ticket[49]
 		date := ticket[19]
 		order := ticket[50]

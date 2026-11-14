@@ -54,8 +54,14 @@ func main() {
 	urls := make(map[string]int)
 	agents := make(map[string]int)
 
+	skipped := 0
+
 	for scanner.Scan() {
 		entry := strings.Split(scanner.Text(), sep)
+		if len(entry) < 10 {
+			skipped++
+			continue
+		}
 		//entry[3] - the remote host (the client IP)
 		//entry[8] - the page that linked to this URL
 		//entry[9] - the browser identification string
@@ -65,7 +71,15 @@ func main() {
 		hits++
 	}
 
+	if err := scanner.Err(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	fmt.Println("Hits:", hits)
+	if skipped > 0 {
+		fmt.Fprintln(os.Stderr, "Skipped malformed lines:", skipped)
+	}
 
 	if *ipMode {
 		for k, v := range ips {

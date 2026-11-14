@@ -42,7 +42,12 @@ func main() {
 	}
 
 	// sanity check, display to standard output
-	for _, each := range rawCSVData {
+	for i, each := range rawCSVData {
+		if len(each) < 3 {
+			log.Printf("line %d: expected 3 fields, got %d", i+1, len(each))
+			continue
+		}
+
 		code := each[0]
 		src := each[1]
 		dst := each[2]
@@ -50,13 +55,13 @@ func main() {
 		// Ensure we have a valid src & dst URL.
 		for _, site := range each[1:3] {
 			u, err := url.Parse(site)
-			fmt.Println(u.Scheme)
-			fmt.Println(u.Host)
-			fmt.Println(u.Path)
-
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			fmt.Println(u.Scheme)
+			fmt.Println(u.Host)
+			fmt.Println(u.Path)
 		}
 
 		fmt.Printf("code: %s\nsource: %s\ndest: %s\n\n", code, src, dst)

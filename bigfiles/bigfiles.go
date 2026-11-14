@@ -9,12 +9,16 @@ import (
 	"path/filepath"
 )
 
-func scan(path string, f os.FileInfo, _ error) error {
-	if f.Name() != "." || f.Name() != ".." {
-		// Greater than 100 MB
-		if f.Size() > 104857600 {
-			fmt.Printf("%d|%s\n", f.Size(), path)
-		}
+func scan(path string, f os.FileInfo, err error) error {
+	if err != nil {
+		// f may be nil here; report the path and keep walking.
+		fmt.Fprintln(os.Stderr, err)
+		return nil
+	}
+
+	// Greater than 100 MB
+	if !f.IsDir() && f.Size() > 104857600 {
+		fmt.Printf("%d|%s\n", f.Size(), path)
 	}
 
 	return nil
