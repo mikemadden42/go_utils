@@ -34,7 +34,7 @@ func main() {
 func Md5File(filePath string) (hash string, err error) {
 	f, err := os.Open(filepath.Clean(filePath))
 	if err != nil {
-		return "", fmt.Errorf("error opening file for MD5 computation: %v (%s)", err, filePath)
+		return "", fmt.Errorf("error opening file for MD5 computation: %w (%s)", err, filePath)
 	}
 
 	// Defer a function closure to check the error from f.Close()
@@ -43,7 +43,7 @@ func Md5File(filePath string) (hash string, err error) {
 			// If we haven't already recorded an error (e.g., from io.Copy),
 			// set the return error to the close error.
 			if err == nil {
-				err = fmt.Errorf("error closing file: %v", closeErr)
+				err = fmt.Errorf("error closing file: %w", closeErr)
 			}
 		}
 	}()
@@ -51,7 +51,7 @@ func Md5File(filePath string) (hash string, err error) {
 	hasher := md5.New() // #nosec G401 -- used as a file checksum, not for security
 	// Use = instead of := for 'err' since it's now a named return parameter
 	if _, err = io.Copy(hasher, f); err != nil {
-		return "", fmt.Errorf("error calculating hash: %v", err)
+		return "", fmt.Errorf("error calculating hash: %w", err)
 	}
 
 	return fmt.Sprintf("%x", hasher.Sum(nil)), nil

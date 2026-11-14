@@ -28,3 +28,27 @@ func TestDiffDays(t *testing.T) {
 		})
 	}
 }
+
+func TestParseDate(t *testing.T) {
+	tests := []struct {
+		in      string
+		want    time.Time
+		wantErr bool
+	}{
+		{"2020-07-06", time.Date(2020, 7, 6, 0, 0, 0, 0, time.UTC), false},
+		{"2020-07-06T14:00:00Z", time.Date(2020, 7, 6, 14, 0, 0, 0, time.UTC), false},
+		{"07/06/2020", time.Time{}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.in, func(t *testing.T) {
+			got, err := parseDate(tt.in)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("parseDate(%q) error = %v, wantErr %v", tt.in, err, tt.wantErr)
+			}
+			if !got.Equal(tt.want) {
+				t.Errorf("parseDate(%q) = %v, want %v", tt.in, got, tt.want)
+			}
+		})
+	}
+}

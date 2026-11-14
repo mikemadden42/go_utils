@@ -57,7 +57,7 @@ crashes, then the lint config and the two skipped modules.
 - [x] Makefile and Taskfile overlap: `make check` only lints, `task check`
   also runs goimports and gosec. `make build` uses goreleaser with no config
   file. Keep one.
-- [ ] `.gitignore` misses extension-less macOS/Linux binaries and the `data/`
+- [x] `.gitignore` misses extension-less macOS/Linux binaries and the `data/`
   folder created by `download`.
 
 ## Cleanup
@@ -67,10 +67,10 @@ crashes, then the lint config and the two skipped modules.
   `"sha256.go"`; the others default to empty.
 - [x] Add `// #nosec G401 G501` with a reason to the md5/sha1 checksum code
   (also G703 for user-chosen paths in `bigfiles` and `dirsize`).
-- [ ] Wrap errors with `%w` instead of `%v`.
-- [ ] `email/email.go:10` — sender is a real-looking `@fox.com` address; use an
+- [x] Wrap errors with `%w` instead of `%v`.
+- [x] `email/email.go:10` — sender is a real-looking `@fox.com` address; use an
   `example.com` address.
-- [ ] Hard-coded inputs: `countdown` has a fixed 2020 date; `tags` calls
+- [x] Hard-coded inputs: `countdown` has a fixed 2020 date; `tags` calls
   StackExchange API v2.2. Make these flags or arguments.
 - [x] Remaining revive warnings: missing package comments (19 tools; the
   default output limit showed only 3) and unused `via` in `download`.

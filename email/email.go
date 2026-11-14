@@ -8,7 +8,7 @@ import (
 func main() {
 	subject := "live"
 	body := "We'll do it live!!"
-	author := "billy.oreilly@fox.com"
+	author := "sender@example.net"
 	email(subject, body, author)
 }
 
