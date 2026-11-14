@@ -45,13 +45,13 @@ crashes, then the lint config and the two skipped modules.
   must be the string `"2"`. Those settings are currently ignored. v2 keys:
   `linters.default: none`, `linters.settings.*`,
   `formatters.settings.goimports.local-prefixes`, `linters.exclusions.paths`.
-- [ ] `keywords/` and `pinghosts/` are separate modules, so `./...` from the
+- [x] `keywords/` and `pinghosts/` are separate modules, so `./...` from the
   root skips them (lint, vet, gosec, `task check`, README `go install`).
   Merge them into the root module, or add a `go.work` and run checks per
   module.
-- [ ] Old dependencies: `keywords` targets Go 1.13 and uses deprecated
-  `ioutil`; `pinghosts` pins `x/net v0.39.0`; `go-fastping` is unmaintained
-  since 2016. Run `govulncheck`.
+- [ ] Old dependencies: `go-fastping` (used by `pinghosts`) is unmaintained
+  since 2016. Run `govulncheck`. (`ioutil` removed and `x/net` updated when the
+  modules were merged.)
 - [ ] No CI workflow (no `.github/workflows`) and no tests. The hash functions
   and `DiffDays` are easy to test.
 - [ ] Makefile and Taskfile overlap: `make check` only lints, `task check`

@@ -1,15 +1,15 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/antonholmquist/jason"
 )
 
 func main() {
 
-	exampleJSON, err := ioutil.ReadFile("composer.json")
+	exampleJSON, err := os.ReadFile("composer.json")
 	if err != nil {
 		panic(err)
 	}
