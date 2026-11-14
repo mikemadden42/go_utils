@@ -9,15 +9,19 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
+	"path/filepath"
 )
 
 func main() {
+	filePtr := flag.String("file", "rws.csv", "CSV of code, source URL and destination URL")
+	flag.Parse()
 
-	csvFile, err := os.Open("rws.csv")
+	csvFile, err := os.Open(filepath.Clean(*filePtr))
 
 	if err != nil {
 		fmt.Println(err)

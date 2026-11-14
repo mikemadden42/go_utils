@@ -6,10 +6,12 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/tatsushid/go-fastping"
@@ -20,7 +22,10 @@ func init() {
 }
 
 func main() {
-	inputFile, err := os.Open("hosts.txt")
+	filePtr := flag.String("file", "hosts.txt", "file of hosts to ping, one per line")
+	flag.Parse()
+
+	inputFile, err := os.Open(filepath.Clean(*filePtr))
 	if err != nil {
 		log.Fatal("Error opening input file:", err)
 	}
