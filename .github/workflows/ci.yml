@@ -12,11 +12,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # Use the latest patched release rather than the go.mod minimum (1.26.0),
       # so govulncheck checks the standard library we would actually build with.
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version: stable
 
@@ -31,7 +31,7 @@ jobs:
 
       # Runs the linters and formatters from .golangci.yml, including gosec.
       - name: Lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
         with:
           version: v2.15
 
