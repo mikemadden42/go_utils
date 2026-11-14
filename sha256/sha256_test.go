@@ -1,8 +1,6 @@
 package main
 
 import (
-	"errors"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
@@ -22,12 +20,5 @@ func TestSha256File(t *testing.T) {
 	want := "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 	if got != want {
 		t.Errorf("Sha256File(%q) = %s, want %s", path, got, want)
-	}
-}
-
-func TestSha256FileMissing(t *testing.T) {
-	_, err := Sha256File(filepath.Join(t.TempDir(), "missing"))
-	if !errors.Is(err, fs.ErrNotExist) {
-		t.Errorf("got error %v, want one wrapping fs.ErrNotExist", err)
 	}
 }

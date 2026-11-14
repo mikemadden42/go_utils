@@ -62,8 +62,9 @@ crashes, then the lint config and the two skipped modules.
 
 ## Cleanup
 
-- [ ] `md5`, `sha1`, `sha256`, `sha3` are copies apart from the hash function.
-  Replace with one `hashsum -algo=sha256` tool. `sha256` defaults to
+- [x] `md5`, `sha1`, `sha256`, `sha3` are copies apart from the hash function.
+  Replace with one `hashsum -algo=sha256` tool. (Done instead as a shared
+  `internal/filehash` package; the four commands are unchanged.) `sha256` defaults to
   `"sha256.go"`; the others default to empty.
 - [x] Add `// #nosec G401 G501` with a reason to the md5/sha1 checksum code
   (also G703 for user-chosen paths in `bigfiles` and `dirsize`).

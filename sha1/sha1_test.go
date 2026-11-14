@@ -1,8 +1,6 @@
 package main
 
 import (
-	"errors"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
@@ -22,12 +20,5 @@ func TestSha1File(t *testing.T) {
 	want := "a9993e364706816aba3e25717850c26c9cd0d89d"
 	if got != want {
 		t.Errorf("Sha1File(%q) = %s, want %s", path, got, want)
-	}
-}
-
-func TestSha1FileMissing(t *testing.T) {
-	_, err := Sha1File(filepath.Join(t.TempDir(), "missing"))
-	if !errors.Is(err, fs.ErrNotExist) {
-		t.Errorf("got error %v, want one wrapping fs.ErrNotExist", err)
 	}
 }

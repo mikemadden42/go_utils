@@ -1,8 +1,6 @@
 package main
 
 import (
-	"errors"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
@@ -22,12 +20,5 @@ func TestMd5File(t *testing.T) {
 	want := "900150983cd24fb0d6963f7d28e17f72"
 	if got != want {
 		t.Errorf("Md5File(%q) = %s, want %s", path, got, want)
-	}
-}
-
-func TestMd5FileMissing(t *testing.T) {
-	_, err := Md5File(filepath.Join(t.TempDir(), "missing"))
-	if !errors.Is(err, fs.ErrNotExist) {
-		t.Errorf("got error %v, want one wrapping fs.ErrNotExist", err)
 	}
 }

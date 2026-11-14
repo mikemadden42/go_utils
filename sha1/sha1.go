@@ -5,9 +5,9 @@ import (
 	"crypto/sha1" // #nosec G505 -- used as a file checksum, not for security
 	"flag"
 	"fmt"
-	"io"
 	"os"
-	"path/filepath"
+
+	"github.com/mikemadden42/go_utils/internal/filehash"
 )
 
 func main() {
@@ -29,30 +29,6 @@ func main() {
 }
 
 // Sha1File returns the SHA-1 hash for a given file.
-// Uses named return values (hash, err) to correctly handle the error
-// from f.Close() in the deferred function.
-func Sha1File(filePath string) (hash string, err error) {
-	f, err := os.Open(filepath.Clean(filePath))
-	if err != nil {
-		return "", fmt.Errorf("error opening file for SHA-1 computation: %w (%s)", err, filePath)
-	}
-
-	// Defer a function closure to check the error from f.Close()
-	defer func() {
-		if closeErr := f.Close(); closeErr != nil {
-			// If we haven't already recorded an error (e.g., from io.Copy),
-			// set the return error to the close error.
-			if err == nil {
-				err = fmt.Errorf("error closing file: %w", closeErr)
-			}
-		}
-	}()
-
-	hasher := sha1.New() // #nosec G401 -- used as a file checksum, not for security
-	// Use = instead of := for 'err' since it's now a named return parameter
-	if _, err = io.Copy(hasher, f); err != nil {
-		return "", fmt.Errorf("error calculating hash: %w", err)
-	}
-
-	return fmt.Sprintf("%x", hasher.Sum(nil)), nil
+func Sha1File(filePath string) (string, error) {
+	return filehash.File(filePath, sha1.New()) // #nosec G401 -- used as a file checksum, not for security
 }
