@@ -40,7 +40,7 @@ crashes, then the lint config and the two skipped modules.
 
 ## Tooling
 
-- [ ] `.golangci.yml` is not valid v2 config. `config verify` rejects
+- [x] `.golangci.yml` is not valid v2 config. `config verify` rejects
   `disable-all`, `linters-settings` and `issues.exclude-dirs`, and `version`
   must be the string `"2"`. Those settings are currently ignored. v2 keys:
   `linters.default: none`, `linters.settings.*`,
