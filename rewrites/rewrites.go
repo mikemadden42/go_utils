@@ -25,7 +25,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		os.Exit(1)
 	}
 
 	defer func(csvFile *os.File) {
