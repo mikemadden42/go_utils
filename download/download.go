@@ -11,13 +11,20 @@ package main
 import (
 	"bufio"
 	"crypto/sha512"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
+	"path"
+	"path/filepath"
 )
+
+const downloadDir = "data"
+
+// maxRedirects matches the limit of Go's default redirect policy.
+const maxRedirects = 10
 
 func main() {
 	// The size of a SHA512 checksum in bytes.
@@ -36,60 +43,47 @@ func main() {
 		}
 	}(file)
 
+	err = os.MkdirAll(downloadDir, 0700)
+	checkErr(err)
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		host := scanner.Text()
-		get(host)
+		if err := get(host); err != nil {
+			fmt.Println(err)
+		}
 	}
 
+	if err := scanner.Err(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
-func get(src string) {
-	rawURL := src
-
+func get(rawURL string) error {
 	fileURL, err := url.Parse(rawURL)
-
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	path := fileURL.Path
-
-	segments := strings.Split(path, "/")
-
-	downloadDir := "data"
-	err = os.Mkdir(downloadDir, 0700)
-	checkErr(err)
-	fileName := downloadDir + string(os.PathSeparator) + segments[len(segments)-1]
-
-	file, err := os.Create(fileName)
-
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
+	name := path.Base(fileURL.Path)
+	if name == "." || name == "/" {
+		return fmt.Errorf("%s: no file name in URL path", rawURL)
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			fmt.Println("Unable to close file...")
-		}
-	}(file)
-
-	//fmt.Printf("Downloading file %s...", fileName)
-	//fmt.Println()
 
 	check := http.Client{
 		CheckRedirect: func(r *http.Request, via []*http.Request) error {
+			if len(via) >= maxRedirects {
+				return errors.New("stopped after 10 redirects")
+			}
 			r.URL.Opaque = r.URL.Path
 			return nil
 		},
 	}
 
-	resp, err := check.Get(rawURL) // add a filter to check redirect
-
+	resp, err := check.Get(rawURL)
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		return err
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -98,14 +92,28 @@ func get(src string) {
 		}
 	}(resp.Body)
 
-	size, err := io.Copy(file, resp.Body)
-
-	if err != nil {
-		panic(err)
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("%s,%s", resp.Status, rawURL)
 	}
 
-	fmt.Printf("%s,%s,%v", resp.Status, rawURL, size)
-	fmt.Println()
+	file, err := os.Create(filepath.Clean(filepath.Join(downloadDir, name)))
+	if err != nil {
+		return err
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("Unable to close file...")
+		}
+	}(file)
+
+	size, err := io.Copy(file, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%s,%s,%v\n", resp.Status, rawURL, size)
+	return nil
 }
 
 func checkErr(err error) {
