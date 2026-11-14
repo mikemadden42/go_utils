@@ -24,9 +24,49 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
+
+// stats holds hit counts from an access log.
+type stats struct {
+	Hits    int
+	Skipped int
+	IPs     map[string]int
+	URLs    map[string]int
+	Agents  map[string]int
+}
+
+// countHits reads a caret-separated access log and counts hits by client
+// IP, referring URL and user agent. Lines with fewer than 10 fields are
+// counted in Skipped.
+func countHits(r io.Reader) (stats, error) {
+	const sep string = "^"
+	s := stats{
+		IPs:    make(map[string]int),
+		URLs:   make(map[string]int),
+		Agents: make(map[string]int),
+	}
+
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		entry := strings.Split(scanner.Text(), sep)
+		if len(entry) < 10 {
+			s.Skipped++
+			continue
+		}
+		//entry[3] - the remote host (the client IP)
+		//entry[8] - the page that linked to this URL
+		//entry[9] - the browser identification string
+		s.IPs[entry[3]]++
+		s.URLs[entry[8]]++
+		s.Agents[entry[9]]++
+		s.Hits++
+	}
+
+	return s, scanner.Err()
+}
 
 func main() {
 	ipMode := flag.Bool("ip", false, "enable stats by IP")
@@ -49,56 +89,33 @@ func main() {
 		}
 	}(file)
 
-	scanner := bufio.NewScanner(file)
-	const sep string = "^"
-	hits := 0
-	ips := make(map[string]int)
-	urls := make(map[string]int)
-	agents := make(map[string]int)
-
-	skipped := 0
-
-	for scanner.Scan() {
-		entry := strings.Split(scanner.Text(), sep)
-		if len(entry) < 10 {
-			skipped++
-			continue
-		}
-		//entry[3] - the remote host (the client IP)
-		//entry[8] - the page that linked to this URL
-		//entry[9] - the browser identification string
-		ips[entry[3]]++
-		urls[entry[8]]++
-		agents[entry[9]]++
-		hits++
-	}
-
-	if err := scanner.Err(); err != nil {
+	s, err := countHits(file)
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Hits:", hits)
-	if skipped > 0 {
-		fmt.Fprintln(os.Stderr, "Skipped malformed lines:", skipped)
+	fmt.Println("Hits:", s.Hits)
+	if s.Skipped > 0 {
+		fmt.Fprintln(os.Stderr, "Skipped malformed lines:", s.Skipped)
 	}
 
 	if *ipMode {
-		for k, v := range ips {
+		for k, v := range s.IPs {
 			fmt.Println(k, v)
 		}
 		fmt.Println("")
 	}
 
 	if *urlMode {
-		for k, v := range urls {
+		for k, v := range s.URLs {
 			fmt.Println(k, v)
 		}
 		fmt.Println("")
 	}
 
 	if *agentMode {
-		for k, v := range agents {
+		for k, v := range s.Agents {
 			fmt.Println(v, k)
 		}
 		fmt.Println("")

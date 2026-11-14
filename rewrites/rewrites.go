@@ -9,6 +9,7 @@ package main
 
 import (
 	"encoding/csv"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -16,6 +17,35 @@ import (
 	"os"
 	"path/filepath"
 )
+
+// errShortRow is returned by parseRewrite for rows with fewer than 3 fields.
+var errShortRow = errors.New("expected 3 fields")
+
+// rewrite is one row of the rewrites CSV.
+type rewrite struct {
+	Code   string
+	Source *url.URL
+	Dest   *url.URL
+}
+
+// parseRewrite parses a row of code, source URL and destination URL.
+func parseRewrite(row []string) (rewrite, error) {
+	if len(row) < 3 {
+		return rewrite{}, fmt.Errorf("%w, got %d", errShortRow, len(row))
+	}
+
+	src, err := url.Parse(row[1])
+	if err != nil {
+		return rewrite{}, err
+	}
+
+	dst, err := url.Parse(row[2])
+	if err != nil {
+		return rewrite{}, err
+	}
+
+	return rewrite{Code: row[0], Source: src, Dest: dst}, nil
+}
 
 func main() {
 	filePtr := flag.String("file", "rws.csv", "CSV of code, source URL and destination URL")
@@ -48,27 +78,21 @@ func main() {
 
 	// sanity check, display to standard output
 	for i, each := range rawCSVData {
-		if len(each) < 3 {
-			log.Printf("line %d: expected 3 fields, got %d", i+1, len(each))
+		rw, err := parseRewrite(each)
+		if errors.Is(err, errShortRow) {
+			log.Printf("line %d: %v", i+1, err)
 			continue
 		}
+		if err != nil {
+			log.Fatal(err)
+		}
 
-		code := each[0]
-		src := each[1]
-		dst := each[2]
-
-		// Ensure we have a valid src & dst URL.
-		for _, site := range each[1:3] {
-			u, err := url.Parse(site)
-			if err != nil {
-				log.Fatal(err)
-			}
-
+		for _, u := range []*url.URL{rw.Source, rw.Dest} {
 			fmt.Println(u.Scheme)
 			fmt.Println(u.Host)
 			fmt.Println(u.Path)
 		}
 
-		fmt.Printf("code: %s\nsource: %s\ndest: %s\n\n", code, src, dst)
+		fmt.Printf("code: %s\nsource: %s\ndest: %s\n\n", rw.Code, each[1], each[2])
 	}
 }
