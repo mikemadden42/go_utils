@@ -10,3 +10,27 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Binaries built with `go build` inside each tool's directory
+/bigfiles/bigfiles
+/countdown/countdown
+/dial/dial
+/dirsize/dirsize
+/download/download
+/email/email
+/inventory/inventory
+/keywords/keywords
+/lookup/lookup
+/md5/md5
+/pinghosts/pinghosts
+/pool/pool
+/rewrites/rewrites
+/sha1/sha1
+/sha256/sha256
+/sha3/sha3
+/tags/tags
+/tickets/tickets
+/visitors/visitors
+
+# Files saved by the download tool
+data/

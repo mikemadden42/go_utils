@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
@@ -24,7 +26,8 @@ func TestSha3File(t *testing.T) {
 }
 
 func TestSha3FileMissing(t *testing.T) {
-	if _, err := Sha3File(filepath.Join(t.TempDir(), "missing")); err == nil {
-		t.Error("expected an error for a missing file")
+	_, err := Sha3File(filepath.Join(t.TempDir(), "missing"))
+	if !errors.Is(err, fs.ErrNotExist) {
+		t.Errorf("got error %v, want one wrapping fs.ErrNotExist", err)
 	}
 }

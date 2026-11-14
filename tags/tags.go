@@ -22,7 +22,7 @@ func main() {
 		}
 	}
 
-	r, err := http.Get("https://api.stackexchange.com/2.2/tags?page=1&pagesize=100&order=desc&sort=popular&site=stackoverflow")
+	r, err := http.Get("https://api.stackexchange.com/2.3/tags?page=1&pagesize=100&order=desc&sort=popular&site=stackoverflow")
 	checkErr(err)
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
