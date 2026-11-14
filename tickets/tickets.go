@@ -3,13 +3,18 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 func main() {
-	csvFile, err := os.Open("tickets.csv")
+	filePtr := flag.String("file", "tickets.csv", "ticket export CSV")
+	flag.Parse()
+
+	csvFile, err := os.Open(filepath.Clean(*filePtr))
 
 	if err != nil {
 		fmt.Println(err)

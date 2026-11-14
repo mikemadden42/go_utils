@@ -3,15 +3,19 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/antonholmquist/jason"
 )
 
 func main() {
+	filePtr := flag.String("file", "composer.json", "composer.json to read")
+	flag.Parse()
 
-	exampleJSON, err := os.ReadFile("composer.json")
+	exampleJSON, err := os.ReadFile(filepath.Clean(*filePtr))
 	if err != nil {
 		panic(err)
 	}

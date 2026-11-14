@@ -13,6 +13,7 @@ import (
 	"bufio"
 	"crypto/sha512"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -28,10 +29,13 @@ const downloadDir = "data"
 const maxRedirects = 10
 
 func main() {
+	filePtr := flag.String("file", "urls.txt", "file of URLs to download, one per line")
+	flag.Parse()
+
 	// The size of a SHA512 checksum in bytes.
 	fmt.Printf("SHA512_size,%v\n", sha512.Size)
 
-	file, err := os.Open("urls.txt")
+	file, err := os.Open(filepath.Clean(*filePtr))
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)

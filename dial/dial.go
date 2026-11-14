@@ -10,9 +10,11 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -27,7 +29,10 @@ type dialType struct {
 }
 
 func main() {
-	file, e := os.ReadFile("./dial.json")
+	filePtr := flag.String("file", "dial.json", "JSON file with the server and ports to check")
+	flag.Parse()
+
+	file, e := os.ReadFile(filepath.Clean(*filePtr))
 	if e != nil {
 		fmt.Printf("File error: %v\n", e)
 		os.Exit(1)
