@@ -5,10 +5,43 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
-	"strings"
+	"slices"
 )
+
+// Column positions in the ticket export.
+const (
+	colDate     = 19
+	colSummary  = 32
+	colAssignee = 49
+	colOrder    = 50
+	minFields   = colOrder + 1
+)
+
+// groupByAssignee formats each ticket in records and groups the results by
+// assignee. The first record is the header row and is skipped. Rows with
+// too few fields are reported to warn and skipped.
+func groupByAssignee(records [][]string, warn io.Writer) map[string][]string {
+	tickets := make(map[string][]string)
+
+	for i, ticket := range records {
+		if i == 0 {
+			continue
+		}
+		if len(ticket) < minFields {
+			_, _ = fmt.Fprintf(warn, "line %d: expected %d fields, got %d\n", i+1, minFields, len(ticket))
+			continue
+		}
+
+		assignee := ticket[colAssignee]
+		line := fmt.Sprintf("%15s - %22s - %s", ticket[colOrder], ticket[colDate], ticket[colSummary])
+		tickets[assignee] = append(tickets[assignee], line)
+	}
+
+	return tickets
+}
 
 func main() {
 	filePtr := flag.String("file", "tickets.csv", "ticket export CSV")
@@ -34,34 +67,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	tickets := make(map[string]string)
+	tickets := groupByAssignee(rawCSVData, os.Stderr)
 
-	// Skip the header row; the export has at least 51 columns.
-	for i, ticket := range rawCSVData {
-		if i == 0 {
-			continue
-		}
-		if len(ticket) < 51 {
-			fmt.Fprintf(os.Stderr, "line %d: expected 51 fields, got %d\n", i+1, len(ticket))
-			continue
-		}
-
-		assignee := ticket[49]
-		date := ticket[19]
-		order := ticket[50]
-		summary := ticket[32]
-
-		currentTicket := fmt.Sprintf("%15s - %22s - %s|", order, date, summary)
-		tickets[assignee] += currentTicket
+	// Print assignees in sorted order so the output is stable between runs.
+	assignees := make([]string, 0, len(tickets))
+	for assignee := range tickets {
+		assignees = append(assignees, assignee)
 	}
+	slices.Sort(assignees)
 
-	for key, values := range tickets {
-		fmt.Print(key)
-		count := strings.Count(values, "|")
-		fmt.Println(" -", count, "request(s)")
-		assignments := strings.Split(values, "|")
-		for _, assignment := range assignments {
-			fmt.Println(assignment)
+	for _, assignee := range assignees {
+		fmt.Println(assignee, "-", len(tickets[assignee]), "request(s)")
+		for _, line := range tickets[assignee] {
+			fmt.Println(line)
 		}
+		fmt.Println()
 	}
 }
