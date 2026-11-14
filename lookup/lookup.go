@@ -16,14 +16,13 @@ import (
 
 var wg sync.WaitGroup
 
+// maxLookups limits how many hosts are resolved at once.
+const maxLookups = 20
+
 func main() {
 	filePtr := flag.String("file", "hosts.txt", "hosts file")
 
 	flag.Parse()
-	if flag.NFlag() == 0 {
-		flag.Usage()
-		os.Exit(1)
-	}
 
 	file, err := os.Open(*filePtr)
 	if err != nil {
@@ -38,17 +37,29 @@ func main() {
 		}
 	}(file)
 
+	sem := make(chan struct{}, maxLookups)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		host := scanner.Text()
 		wg.Add(1)
-		go resolve(host)
+		sem <- struct{}{}
+		go func() {
+			defer func() { <-sem }()
+			resolve(host)
+		}()
 	}
 
 	wg.Wait()
+
+	if err := scanner.Err(); err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
 }
 
 func resolve(host string) {
+	defer wg.Done()
+
 	ips, err := net.LookupHost(host)
 	if err != nil {
 		log.Println(err)
@@ -65,6 +76,4 @@ func resolve(host string) {
 			fmt.Println("OK", ip, host)
 		}
 	}
-
-	defer wg.Done()
 }

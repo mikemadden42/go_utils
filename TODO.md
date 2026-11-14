@@ -22,20 +22,20 @@ crashes, then the lint config and the two skipped modules.
 - [x] `rewrites/rewrites.go:52-57` — `u.Scheme` is read before `err` is
   checked, so a bad URL panics with a nil pointer. A row with fewer than 3
   fields panics on `each[1:3]`.
-- [ ] `keywords/keywords.go:20` — `description` reads the `"name"` key. All
+- [x] `keywords/keywords.go:20` — `description` reads the `"name"` key. All
   errors are ignored; if `require` is missing, `require.Map()` panics.
-- [ ] `dial/dial.go:42` — connections are never closed and `net.Dial` has no
+- [x] `dial/dial.go:42` — connections are never closed and `net.Dial` has no
   timeout, so a filtered port hangs. `host+":"+port` breaks for IPv6; use
   `net.JoinHostPort`.
-- [ ] `visitors/visitors.go:62`, `tickets/tickets.go:34` — fixed column
+- [x] `visitors/visitors.go:62`, `tickets/tickets.go:34` — fixed column
   positions (`entry[9]`, `ticket[50]`) are read without a length check, so a
   short or blank line panics. `tickets` also counts the CSV header row as a
   ticket.
-- [ ] `lookup/lookup.go:23` — running with no flags exits, so the `hosts.txt`
+- [x] `lookup/lookup.go:23` — running with no flags exits, so the `hosts.txt`
   default can never be used. Starts one goroutine per host with no limit.
-- [ ] `pinghosts/pinghosts.go:43` — one host that doesn't resolve stops the
+- [x] `pinghosts/pinghosts.go:43` — one host that doesn't resolve stops the
   whole run with `os.Exit(1)`.
-- [ ] `lookup`, `visitors` — `scanner.Err()` is never checked (`download` fixed), so a
+- [x] `lookup`, `visitors` — `scanner.Err()` is never checked (`download` fixed), so a
   read error looks the same as end of file.
 
 ## Tooling

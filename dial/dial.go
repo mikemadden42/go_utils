@@ -13,6 +13,7 @@ import (
 	"net"
 	"os"
 	"strconv"
+	"time"
 )
 
 type jsonObject struct {
@@ -39,10 +40,12 @@ func main() {
 	protocol := "tcp"
 
 	for _, port := range jsontype.Dial.Ports {
-		_, err := net.Dial(protocol, host+":"+strconv.Itoa(port))
+		address := net.JoinHostPort(host, strconv.Itoa(port))
+		conn, err := net.DialTimeout(protocol, address, 3*time.Second)
 		if err != nil {
 			fmt.Printf("%4s%30s%6d%5s\n", "FAIL", host, port, protocol)
 		} else {
+			_ = conn.Close()
 			fmt.Printf("%4s%30s%6d%5s\n", "OK", host, port, protocol)
 		}
 	}

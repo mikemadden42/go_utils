@@ -40,7 +40,8 @@ func main() {
 		ra, err := net.ResolveIPAddr("ip4:icmp", host)
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
+			fmt.Println()
+			continue
 		}
 
 		success := false
