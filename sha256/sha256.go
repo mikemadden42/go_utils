@@ -1,3 +1,4 @@
+// Command sha256 prints the SHA-256 checksum of a file.
 package main
 
 import (

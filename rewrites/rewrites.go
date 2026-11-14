@@ -4,6 +4,7 @@
 // https://www.socketloop.com/references/golang-encoding-csv-writer-writeall-function-example
 // https://golang.org/pkg/net/url/#example_URL
 
+// Command rewrites checks the source and destination URLs in rws.csv.
 package main
 
 import (

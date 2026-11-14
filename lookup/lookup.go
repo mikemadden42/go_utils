@@ -2,6 +2,8 @@
 // http://golang.org/pkg/sync/#WaitGroup
 // https://gobyexample.com/command-line-flags
 
+// Command lookup resolves each host in a file and reverse-resolves its
+// addresses.
 package main
 
 import (

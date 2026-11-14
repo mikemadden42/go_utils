@@ -1,3 +1,4 @@
+// Command sha3 prints the SHA3-256 checksum of a file.
 package main
 
 import (

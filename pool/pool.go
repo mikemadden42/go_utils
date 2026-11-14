@@ -1,6 +1,7 @@
 // Based on example found at:
 // https://gist.github.com/glesica/a2cd983fa1b4400c158e
 
+// Command pool demonstrates a worker pool that squares numbers.
 package main
 
 import (

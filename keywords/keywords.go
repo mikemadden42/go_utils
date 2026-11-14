@@ -1,3 +1,5 @@
+// Command keywords prints the name, description, keywords and requirements
+// from composer.json.
 package main
 
 import (
