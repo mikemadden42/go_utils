@@ -2,6 +2,7 @@
 
 // google search: site:play.golang.org date duration
 
+// Command countdown prints the number of days since a fixed start date.
 package main
 
 import (

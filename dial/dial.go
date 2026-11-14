@@ -1,3 +1,4 @@
+// Command dial checks whether the TCP ports listed in dial.json are open.
 package main
 
 // http://stackoverflow.com/questions/23140323/creating-a-tcp-client-in-golang

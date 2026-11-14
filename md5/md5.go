@@ -1,7 +1,8 @@
+// Command md5 prints the MD5 checksum of a file.
 package main
 
 import (
-	"crypto/md5"
+	"crypto/md5" // #nosec G501 -- used as a file checksum, not for security
 	"flag"
 	"fmt"
 	"io"
@@ -47,7 +48,7 @@ func Md5File(filePath string) (hash string, err error) {
 		}
 	}()
 
-	hasher := md5.New()
+	hasher := md5.New() // #nosec G401 -- used as a file checksum, not for security
 	// Use = instead of := for 'err' since it's now a named return parameter
 	if _, err = io.Copy(hasher, f); err != nil {
 		return "", fmt.Errorf("error calculating hash: %v", err)

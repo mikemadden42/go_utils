@@ -1,6 +1,7 @@
 // Based on example found at:
 // https://www.socketloop.com/tutorials/golang-file-system-scanning
 
+// Command bigfiles prints every file larger than 100 MB under a directory.
 package main
 
 import (
@@ -33,7 +34,7 @@ func main() {
 
 	dir := os.Args[1] // 1st argument is the directory location
 
-	err := filepath.Walk(dir, scan)
+	err := filepath.Walk(dir, scan) // #nosec G703 -- the user chooses which path to scan
 
 	if err != nil {
 		fmt.Println(err)

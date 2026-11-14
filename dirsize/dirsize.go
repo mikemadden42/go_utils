@@ -1,6 +1,7 @@
 // Based on example found at:
 // https://www.socketloop.com/tutorials/golang-find-file-size-disk-usage-with-filepath-walk
 
+// Command dirsize prints the size in bytes of each directory under a path.
 package main
 
 import (
@@ -18,7 +19,7 @@ func diskUsage(currentPath string, info os.FileInfo) int64 {
 		return size
 	}
 
-	dir, err := os.Open(filepath.Clean(currentPath))
+	dir, err := os.Open(filepath.Clean(currentPath)) // #nosec G703 -- the user chooses which path to scan
 
 	if err != nil {
 		fmt.Println(err)
@@ -59,7 +60,7 @@ func main() {
 
 	dir := os.Args[1] // get the target directory
 
-	info, err := os.Lstat(dir)
+	info, err := os.Lstat(dir) // #nosec G703 -- the user chooses which path to scan
 
 	if err != nil {
 		fmt.Println(err)

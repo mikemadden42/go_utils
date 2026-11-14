@@ -1,3 +1,4 @@
+// Command email sends a test message over SMTP.
 package main
 
 import (

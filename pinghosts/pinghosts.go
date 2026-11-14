@@ -1,6 +1,7 @@
 // https://rosettacode.org/wiki/Read_a_file_line_by_line#Go
 // https://godoc.org/github.com/tatsushid/go-fastping
 
+// Command pinghosts pings each host listed in hosts.txt.
 package main
 
 import (

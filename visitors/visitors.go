@@ -16,6 +16,8 @@
 // visitors -url -log=access.log | sort -rn -k2 | head -5
 // visitors -agent -log=access.log | sort -rn -k1 | head -5
 
+// Command visitors counts hits by IP, URL or user agent in a
+// caret-separated access log.
 package main
 
 import (

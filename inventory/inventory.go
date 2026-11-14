@@ -1,5 +1,6 @@
 // http://stackoverflow.com/questions/11805356/text-template-issue-parse-vs-parsefiles
 
+// Command inventory renders template.txt with sample inventory data.
 package main
 
 import (

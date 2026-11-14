@@ -6,6 +6,7 @@
 // Golang, TLS
 // http://bridge.grumpy-troll.org/2014/05/golang-tls-comodo/
 
+// Command download saves each URL listed in urls.txt into the data folder.
 package main
 
 import (

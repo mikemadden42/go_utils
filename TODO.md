@@ -49,12 +49,12 @@ crashes, then the lint config and the two skipped modules.
   root skips them (lint, vet, gosec, `task check`, README `go install`).
   Merge them into the root module, or add a `go.work` and run checks per
   module.
-- [ ] Old dependencies: `go-fastping` (used by `pinghosts`) is unmaintained
+- [x] Old dependencies: `go-fastping` (used by `pinghosts`) is unmaintained
   since 2016. Run `govulncheck`. (`ioutil` removed and `x/net` updated when the
-  modules were merged.)
-- [ ] No CI workflow (no `.github/workflows`) and no tests. The hash functions
+  modules were merged. `govulncheck` reports no vulnerabilities.)
+- [x] No CI workflow (no `.github/workflows`) and no tests. The hash functions
   and `DiffDays` are easy to test.
-- [ ] Makefile and Taskfile overlap: `make check` only lints, `task check`
+- [x] Makefile and Taskfile overlap: `make check` only lints, `task check`
   also runs goimports and gosec. `make build` uses goreleaser with no config
   file. Keep one.
 - [ ] `.gitignore` misses extension-less macOS/Linux binaries and the `data/`
@@ -65,11 +65,12 @@ crashes, then the lint config and the two skipped modules.
 - [ ] `md5`, `sha1`, `sha256`, `sha3` are copies apart from the hash function.
   Replace with one `hashsum -algo=sha256` tool. `sha256` defaults to
   `"sha256.go"`; the others default to empty.
-- [ ] Add `// #nosec G401 G501` with a reason to the md5/sha1 checksum code.
+- [x] Add `// #nosec G401 G501` with a reason to the md5/sha1 checksum code
+  (also G703 for user-chosen paths in `bigfiles` and `dirsize`).
 - [ ] Wrap errors with `%w` instead of `%v`.
 - [ ] `email/email.go:10` — sender is a real-looking `@fox.com` address; use an
   `example.com` address.
 - [ ] Hard-coded inputs: `countdown` has a fixed 2020 date; `tags` calls
   StackExchange API v2.2. Make these flags or arguments.
-- [ ] Remaining revive warnings: missing package comments (unused `via`
-  parameter in `download` fixed).
+- [x] Remaining revive warnings: missing package comments (19 tools; the
+  default output limit showed only 3) and unused `via` in `download`.

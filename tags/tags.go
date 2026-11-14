@@ -1,6 +1,7 @@
 // Based on example found at:
 // http://stackoverflow.com/questions/17998943/golang-library-package-that-returns-json-string-from-http-request
 
+// Command tags prints the 100 most popular Stack Overflow tags.
 package main
 
 import (

@@ -14,14 +14,30 @@ tasks:
           exit 1
         fi
 
-      - echo "\n--- Running Linters (golangci-lint) ---"
+      - echo "--- Running Linters (golangci-lint) ---"
       - golangci-lint run
 
-      - echo "\n--- Running Security Scanner (gosec) ---"
+      - echo "--- Running Security Scanner (gosec) ---"
       # './...' works correctly for gosec and golangci-lint
       - gosec ./...
 
-      - echo "\nAll checks passed."
+      - echo "--- Running Tests ---"
+      - task: test
+
+      - echo "--- Running Vulnerability Check (govulncheck) ---"
+      - govulncheck ./...
+
+      - echo "All checks passed."
+
+  test:
+    desc: "Runs all tests with the race detector."
+    cmds:
+      - go test -race ./...
+
+  install:
+    desc: "Installs all utilities into $GOBIN."
+    cmds:
+      - go install -ldflags '-s -w' ./...
 
   fmt:
     desc: "Automatically formats all Go code with goimports."

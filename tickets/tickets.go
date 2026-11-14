@@ -1,3 +1,4 @@
+// Command tickets groups the tickets in tickets.csv by assignee.
 package main
 
 import (

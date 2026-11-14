@@ -1,7 +1,8 @@
+// Command sha1 prints the SHA-1 checksum of a file.
 package main
 
 import (
-	"crypto/sha1"
+	"crypto/sha1" // #nosec G505 -- used as a file checksum, not for security
 	"flag"
 	"fmt"
 	"io"
@@ -47,7 +48,7 @@ func Sha1File(filePath string) (hash string, err error) {
 		}
 	}()
 
-	hasher := sha1.New()
+	hasher := sha1.New() // #nosec G401 -- used as a file checksum, not for security
 	// Use = instead of := for 'err' since it's now a named return parameter
 	if _, err = io.Copy(hasher, f); err != nil {
 		return "", fmt.Errorf("error calculating hash: %v", err)
